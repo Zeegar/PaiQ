@@ -8,6 +8,7 @@ GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 # initialize variables
 button_pressed_count = 0
 button_last_state = False
+daemon_running = False
 
 while True:
     # check for button press
@@ -22,6 +23,7 @@ while True:
             if button_pressed_count == 3:
                 print("Running edge-impulse-daemon command...")
                 subprocess.Popen(["edge-impulse-daemon"])
+                daemon_running = True
                 button_pressed_count = 0
                 
         button_last_state = button_current_state
@@ -29,7 +31,7 @@ while True:
         print("Button not pressed")
 
     # check for single button press
-    if button_pressed_count == 1:
+    if button_pressed_count == 1 and daemon_running:
         print("Running SendData.py command...")
         subprocess.call(["python3", "SendData.py"])
         button_pressed_count = 0
