@@ -36,6 +36,10 @@ while True:
                         daemon_running = True
                         button_pressed_count = 1  # reset button pressed count to 1
                 
+                elif button_pressed_count < 2:
+                    button_pressed_count += 1
+                    print("Button pressed {} times".format(button_pressed_count))
+                
         button_last_state = button_current_state
     else:
         print("Button not pressed")
