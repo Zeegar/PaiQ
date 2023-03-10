@@ -19,16 +19,13 @@ def button_callback(channel):
     global current_state
     global is_daemon_started
     if current_state == STATE_START and not is_daemon_started:
-        process = subprocess.Popen(["edge-impulse-daemon"], stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
-        # print the output to the console as it is generated
-        for line in iter(process.stdout.readline, b''):
-            print(line.decode(), end='')
-        process.stdout.close()
-        return_code = process.wait()
-        if return_code == 0:
+        process = subprocess.Popen(["edge-impulse-daemon"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, _ = process.communicate()
+        if b"Connected to wss://remote-mgmt.edgeimpulse.com" in output:
             is_daemon_started = True
             current_state = STATE_DATA
             print("Edge Impulse daemon started successfully")
+            print(output.decode()) # Print the output to the console
         else:
             print("Error starting Edge Impulse daemon")
     elif current_state == STATE_DATA:
