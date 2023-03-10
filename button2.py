@@ -23,15 +23,16 @@ while True:
     if button_current_state != button_last_state:
         if button_current_state == False:
             if debounce(4) == GPIO.LOW:
-                button_pressed_count += 1
-                print("Button pressed {} times".format(button_pressed_count))
+                if not daemon_running:  # check if daemon is not already running
+                    button_pressed_count += 1
+                    print("Button pressed {} times".format(button_pressed_count))
 
-                # if button pressed 3 times, run the CLI command
-                if button_pressed_count == 3:
-                    print("Running edge-impulse-daemon command...")
-                    subprocess.Popen(["edge-impulse-daemon"])
-                    daemon_running = True
-                    button_pressed_count = 0
+                    # if button pressed 3 times, run the CLI command
+                    if button_pressed_count == 3:
+                        print("Running edge-impulse-daemon command...")
+                        subprocess.Popen(["edge-impulse-daemon"])
+                        daemon_running = True
+                        button_pressed_count = 1  # reset button pressed count to 1
                 
         button_last_state = button_current_state
     else:
@@ -42,6 +43,7 @@ while True:
         if debounce(4) == GPIO.LOW:
             print("Running SendData.py command...")
             subprocess.call(["python3", "SendData.py"])
+            daemon_running = False  # reset daemon_running flag
             button_pressed_count = 0
 
     # add a small delay to avoid high CPU usage
