@@ -34,7 +34,7 @@ while True:
                         print("Running edge-impulse-daemon command...")
                         subprocess.Popen(["edge-impulse-daemon"])
                         daemon_running = True
-                        button_pressed_count = 0
+                        button_pressed_count = 1
                     button_last_time = current_time
                 else:
                     button_pressed_count = 0  # reset button pressed count if conditions not met
