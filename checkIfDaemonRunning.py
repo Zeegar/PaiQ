@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import subprocess
+import time
 
 # Set up GPIO pin 4 as input
 GPIO.setmode(GPIO.BCM)
@@ -28,8 +29,15 @@ def button_callback(channel):
     elif current_state == STATE_DATA:
         subprocess.Popen(["python3", "SendData.py"])
 
-# Add button press event detection
-GPIO.add_event_detect(4, GPIO.FALLING, callback=button_callback, bouncetime=300)
+# Add button press event detection with debounce
+last_press_time = 0
+debounce_time = 0.5 # in seconds
+def button_press(channel):
+    global last_press_time
+    if (time.time() - last_press_time) >= debounce_time:
+        button_callback(channel)
+    last_press_time = time.time()
+GPIO.add_event_detect(4, GPIO.FALLING, callback=button_press, bouncetime=300)
 
 # Main loop to keep the script running
 try:
