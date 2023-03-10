@@ -21,11 +21,16 @@ def button_callback(channel):
     if current_state == STATE_START and not is_daemon_started:
         process = subprocess.Popen(["edge-impulse-daemon"], stdout=subprocess.PIPE)
         output, _ = process.communicate()
-        if b"build your machine learning model!" in output:
+        if b"Connected to wss://remote-mgmt.edgeimpulse.com" in output:
             is_daemon_started = True
             current_state = STATE_DATA
+            print("Edge Impulse daemon started successfully")
+            print(output.decode()) # Print the output to the console
+        else:
+            print("Error starting Edge Impulse daemon")
     elif current_state == STATE_DATA:
         subprocess.Popen(["python3", "SendData.py"])
+
 
 
 # Add button press event detection
