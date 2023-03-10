@@ -29,20 +29,21 @@ while True:
                     button_pressed_count += 1
                     print("Button pressed {} times".format(button_pressed_count))
 
-                    # if button pressed 3 times, run the CLI command
-                    if button_pressed_count == 3:
+                    # if button pressed 3 times in a row, run the CLI command
+                    if button_pressed_count == 3 and time.time() - button_last_time <= 3:
                         print("Running edge-impulse-daemon command...")
                         subprocess.Popen(["edge-impulse-daemon"])
                         daemon_running = True
                         button_pressed_count = 1  # reset button pressed count to 1
+                        button_last_time = 0
                 
                 elif button_pressed_count < 2:
                     button_pressed_count += 1
                     print("Button pressed {} times".format(button_pressed_count))
+                    button_last_time = time.time()
                 
         button_last_state = button_current_state
-    else:
-        print("Button not pressed")
+
 
     # check for single button press
     if button_pressed_count == 1 and daemon_running:
