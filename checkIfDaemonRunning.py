@@ -21,7 +21,7 @@ def button_callback(channel):
     if current_state == STATE_START and not is_daemon_started:
         process = subprocess.Popen(["edge-impulse-daemon"], stdout=subprocess.PIPE)
         output, _ = process.communicate()
-        if b"build your machine learning model" in output:
+        if b"build your machine learning model!" in output:
             is_daemon_started = True
             current_state = STATE_DATA
     elif current_state == STATE_DATA:
