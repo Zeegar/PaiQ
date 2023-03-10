@@ -17,7 +17,7 @@ def button_callback(channel):
         subprocess.Popen(["edge-impulse-daemon"])
         current_state = STATE_DATA
     elif current_state == STATE_DATA:
-        subprocess.Popen(["python", "SendData.py"])
+        subprocess.Popen(["python3", "SendData.py"])
 
 # Add button press event detection
 GPIO.add_event_detect(4, GPIO.FALLING, callback=button_callback, bouncetime=300)
