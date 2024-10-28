@@ -1,10 +1,10 @@
 import RPi.GPIO as GPIO
 import subprocess
 import time
+import gpio_utils
 
 # Set up GPIO pin 4 as input
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+gpio_utils.setup_gpio(4)
 
 # Define state variables
 STATE_START = 1
@@ -30,14 +30,7 @@ def button_callback(channel):
         subprocess.Popen(["python3", "SendData.py"])
 
 # Add button press event detection with debounce
-last_press_time = 0
-debounce_time = 0.5 # in seconds
-def button_press(channel):
-    global last_press_time
-    if (time.time() - last_press_time) >= debounce_time:
-        button_callback(channel)
-    last_press_time = time.time()
-GPIO.add_event_detect(4, GPIO.FALLING, callback=button_press, bouncetime=300)
+gpio_utils.handle_button_press(4, button_callback)
 
 # Main loop to keep the script running
 try:
@@ -46,4 +39,4 @@ try:
 
 # Clean up GPIO pins when script is interrupted
 except KeyboardInterrupt:
-    GPIO.cleanup()
+    gpio_utils.cleanup_gpio()
