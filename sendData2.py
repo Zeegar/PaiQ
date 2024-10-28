@@ -1,9 +1,9 @@
 import RPi.GPIO as GPIO
 import subprocess
+import gpio_utils
 
 # Set up GPIO pin 4 as input
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+gpio_utils.setup_gpio(4)
 
 # Define state variables
 STATE_START = 1
@@ -13,7 +13,7 @@ current_state = STATE_START
 
 def main():
     # Add button press event detection
-    GPIO.add_event_detect(4, GPIO.FALLING, callback=button_callback, bouncetime=300)
+    gpio_utils.handle_button_press(4, button_callback)
 
     # Main loop to keep the script running
     try:
@@ -22,7 +22,7 @@ def main():
 
     # Clean up GPIO pins when script is interrupted
     except KeyboardInterrupt:
-        GPIO.cleanup()
+        gpio_utils.cleanup_gpio()
 
 
 def button_callback(channel):
